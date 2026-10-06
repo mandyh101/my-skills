@@ -1,0 +1,24 @@
+{
+  "name": "my-skills",
+  "description": "Mandy's personal Claude Code skills",
+  "version": "0.1.0",
+  "owner": {
+    "name": "mandyh101"
+  },
+  "plugins": [
+    {
+      "name": "my-skills",
+      "source": "./",
+      "description": "Little-loop skill family — grills a ticket, gets a phased plan signed off, then implements and verifies one phase (one commit) at a time",
+      "version": "0.1.0",
+      "author": {
+        "name": "mandyh101"
+      },
+      "homepage": "https://github.com/mandyh101/my-skills",
+      "repository": "https://github.com/mandyh101/my-skills",
+      "license": "MIT",
+      "keywords": ["loop", "planning", "pr", "review", "workflow"],
+      "category": "workflow"
+    }
+  ]
+}
