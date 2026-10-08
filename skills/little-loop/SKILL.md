@@ -82,7 +82,7 @@ git push -u origin <TICKET>-<slug>
 gh pr create --draft --assignee @me --base <base> --title '<type>: <TICKET> <title>' --body '<body>'
 ```
 
-Body: a link to the ticket, one line on what the PR will deliver, a link to the plan doc for plan review, and the Assumed list. The PR is a draft until the loop finishes. Add the PR URL to the run log header.
+Body: first check the repo for a PR template (`.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/PULL_REQUEST_TEMPLATE/`, `docs/`, or repo root; case-insensitive). If one exists, use it as the body: fill its sections, and fit the items below into the matching sections (or add them at the end if none match). Otherwise, use: a link to the ticket, one line on what the PR will deliver, a link to the plan doc for plan review, and the Assumed list. The PR is a draft until the loop finishes. Add the PR URL to the run log header.
 
 **Completion criterion:** grill run and plan signed off (or explicitly waived), plan committed alone as the branch's first commit, draft PR raised, and you can list the phases in order.
 
@@ -102,9 +102,9 @@ For each unticked phase, in order. **Never start a phase until the one before it
 
    > Read `~/.claude/skills/little-verify/SKILL.md` and follow it. Plan doc: `<path>`. Phase: `<N — name>`. Phase start: `<PHASE_START>`. Sonar: `<…>`.
 
-4. **On needs work** — a phase gets **two attempts** in total: the first build, and one re-work. Dispatch a new implementer whose prompt opens with **"re-work round"**, then the plan doc, phase, branch, phase-start sha, the phase commit sha, that this is the **last attempt**, and the verifier's findings **verbatim**. A fresh agent has no memory; a paraphrased finding sends it off rebuilding from scratch. Then re-verify with a fresh verifier. Log `rework` with a one-line reason per blocker.
+4. **On needs work** — a phase gets **three attempts** in total: the first build, and up to **two re-work rounds**. Dispatch a new implementer whose prompt opens with **"re-work round <1|2>"**, then the plan doc, phase, branch, phase-start sha, the phase commit sha, and the latest verifier's findings **verbatim** — on round 2, also say it's the **last attempt**. A fresh agent has no memory; a paraphrased finding sends it off rebuilding from scratch. Then re-verify with a fresh verifier. Log `rework` with the round and a one-line reason per blocker.
 
-   Still needs work after the second attempt → **escalate**. So is an implementer arguing a finding is wrong — the user settles it, not a third attempt.
+   Still needs work after re-work round 2 → **escalate**. So is an implementer arguing a finding is wrong — the user settles it, not another round.
 
 5. **On pass — squash and push.** Fold any fixups into the one phase commit, then push:
 
@@ -133,7 +133,7 @@ Once every phase is pushed:
 1. **CI** — `gh pr checks <pr> --watch --fail-fast`, bounded at about ten minutes. Still running at the bound is reported as still running, never as passing.
 2. **Sonar gate**, where available — the gate endpoint in [`SONAR-CLI.md`](SONAR-CLI.md#what-replaces-the-dashboard) is the authority.
 
-**Red** → add a `ci-fix` phase to the plan doc (What = the failing check or each Sonar issue's rule + `file:line`, verbatim) and run it through Step 2 — same two attempts, same escalation. Then gate again. Log `ci`.
+**Red** → add a `ci-fix` phase to the plan doc (What = the failing check or each Sonar issue's rule + `file:line`, verbatim) and run it through Step 2 — same three attempts (build + two re-work rounds), same escalation. Then gate again. Log `ci`.
 
 **Green** → update the PR body (below), then `gh pr ready <pr>`.
 
