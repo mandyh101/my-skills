@@ -84,16 +84,28 @@ Measure the PR's size per [`SIZE.md`](../little-loop/SIZE.md); if your fixes too
 Every item gets a reply, including the ones you didn't action. Reply to an inline comment's thread:
 
 ```bash
-gh api repos/<owner/repo>/pulls/<pr>/comments/<comment-id>/replies -f body='(from Claude) <reply>'
+gh api repos/<owner/repo>/pulls/<pr>/comments/<comment-id>/replies -F body=@<reply file>
 ```
 
-Review bodies and issue comments get one PR comment answering each by quote (`gh pr comment <pr> --body …`).
+Review bodies and issue comments get one PR comment answering each by quote (`gh pr comment <pr> --body-file <reply file>`), each answer in the shape below.
 
-- **Fixed** → what changed, and the commit sha. Nothing more.
-- **Disagree** → why, in one sentence, without hedging. The reviewer decides.
-- **Out of scope** → where it went instead.
+Every reply starts with `(from Claude)` so the thread reads as two voices — never add it to someone else's words. Then use this shape, so a reviewer can skim it:
 
-Prefix every reply you post with `(from Claude)` so the thread reads as two voices. Never add it to someone else's words.
+```markdown
+(from Claude)
+
+**The issue:** <1–2 sentences: what was raised, in your own words>
+
+**The suggested change:** <1–2 sentences: what you changed, or what should happen instead>
+
+<optional: extra context that helps — evidence, links, trade-offs. Leave it out if there's nothing useful to add.>
+```
+
+What goes in **The suggested change** depends on the bucket:
+
+- **Fixed** → what changed, and the commit sha.
+- **Disagree** → keep it as it is, and why, in one sentence, without hedging. The reviewer decides.
+- **Out of scope** → where it should go instead (a follow-up ticket).
 
 **Completion criterion:** no open comment is left without a reply.
 

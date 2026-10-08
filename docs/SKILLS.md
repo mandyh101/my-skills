@@ -24,7 +24,7 @@ Manual-only (`disable-model-invocation: true`). Works through review comments, f
 
 ## little-retro
 
-Manual-only. Retro on a finished `little-loop` run — what worked, what didn't, across all its sessions. Improves the little-* skills with your sign-off, then removes the plan doc before merge.
+Manual-only. Retro on a finished `little-loop` run — what worked, what didn't, across all its sessions. Raises a GitHub issue on this repo with the skill improvements you agree, then removes the plan doc before merge.
 
 ## Shared conventions
 

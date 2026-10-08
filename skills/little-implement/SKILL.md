@@ -13,7 +13,7 @@ Review belongs to `little-verify`, which reads your diff cold. An implementer gr
 ## First: which mode?
 
 - **Fresh phase** — no findings in your prompt. Work steps 1–4.
-- **Re-work round** — your prompt starts "re-work round" and carries the verifier's findings. Go to [Re-work rounds](#re-work-rounds).
+- **Re-work round** — your prompt starts "re-work round 1" or "re-work round 2" and carries the verifier's findings. Go to [Re-work rounds](#re-work-rounds).
 
 **Completion criterion:** you've named your mode.
 
@@ -28,6 +28,14 @@ If an assumption turns out false in the code, **stop and report it** — don't c
 ## Step 2 — Build the phase
 
 Write the change with its tests alongside, test-first where there's a test surface (per the `test-driven-development` skill). Tests assert **behaviour, not implementation**.
+
+If that skill isn't available, follow its core loop for each behaviour:
+
+1. **Red.** Write one test for the next behaviour. Run it and watch it fail for the expected reason — not a typo or import error. A test you never saw fail proves nothing.
+2. **Green.** Write the least code that makes it pass. Run the tests; all green.
+3. **Refactor.** Tidy while green, re-running the tests after each change.
+
+No production code without a failing test first; code written ahead of its test is deleted and redone from the test.
 
 - **Stay inside the phase.** Everything in the diff traces to this phase's **What**. Work belonging to a later phase waits for it; a tidy-up belongs in its own ticket; a structural change the phase implies is a decision to report, not a detour to take.
 - **Write to the repo's documented limits first pass** — lint rules, complexity limits, Sonar rules the repo's docs name. The quality gate only runs after push, at the end of the loop.
@@ -82,6 +90,6 @@ git commit --fixup=<phase commit sha>
 
 **A finding you think is wrong gets an argument, not a fix.** Verifiers misread plans; silently "fixing" a non-problem makes the next round worse.
 
-**This is the last attempt.** If it isn't clean the loop stops and nothing gets pushed, so an honest "I can't fix this properly, here's why" is the most useful thing you can produce. The job is to make the code right, not the check pass. Before touching code, re-read each finding against the acceptance criteria — a mismatch there is usually the real cause.
+**There are at most two re-work rounds.** Round 2 is the **last attempt**: if it isn't clean the loop stops and nothing gets pushed. On either round, an honest "I can't fix this properly, here's why" is the most useful thing you can produce. The job is to make the code right, not the check pass. Before touching code, re-read each finding against the acceptance criteria — a mismatch there is usually the real cause.
 
 **Completion criterion:** every finding is fixed or argued against, the checks pass again, the fixup is committed, and your report says which findings you addressed and how.

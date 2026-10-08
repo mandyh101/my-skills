@@ -17,6 +17,6 @@ Personal Claude Code skills — currently the **little-loop** family: take a tic
 - `little-implement` — builds one phase at a time.
 - `little-verify` — checks a built phase against the plan, always a fresh agent.
 - `little-address` — works through PR review comments, failed checks and Sonar.
-- `little-retro` — retro on a finished run, improves the skills themselves, cleans up the plan doc.
+- `little-retro` — retro on a finished run, raises a GitHub issue with skill improvements, cleans up the plan doc.
 
 See [`docs/SKILLS.md`](./docs/SKILLS.md) for the full reference.

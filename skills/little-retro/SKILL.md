@@ -1,12 +1,12 @@
 ---
 name: little-retro
-description: Retro on a finished little-loop run — finds what worked and what didn't across all its sessions, improves the little-* skills with your sign-off, then removes the plan doc before merge.
+description: Retro on a finished little-loop run — finds what worked and what didn't across all its sessions, raises a GitHub issue with the skill improvements you agree, then removes the plan doc before merge.
 disable-model-invocation: true
 ---
 
 # Little retro
 
-Turn one little-loop run — however many sessions it took — into a few concrete improvements to the `little-*` skills. The run log records what happened; deciding what it **means** is this skill's job; deciding what to change is the user's, **one finding at a time**.
+Turn one little-loop run — however many sessions it took — into a few concrete improvements to the `little-*` skills, captured as a GitHub issue on the `my-skills` repo. The run log records what happened; deciding what it **means** is this skill's job; deciding what to change is the user's, **one finding at a time**.
 
 Run it once the PR is approved and before it's merged: its last act removes the plan doc from the branch.
 
@@ -66,28 +66,46 @@ Take the list most-evidenced first. **Stop on each item** — never batch into o
 
 Then the user picks.
 
-**Fix now** → show the exact edit (old text → new text) and apply it only on a yes. Before the first edit, back up what you'll touch — `~/.claude/skills` isn't under version control:
+**Fix now** → draft the exact edit (file, section, old text → new text) and confirm it with the user. **Don't apply it** — this run's skills are the installed plugin copy, which the next update overwrites. Agreed edits go into the issue in Step 5, and the fix lands as a PR from there.
 
-```bash
-mkdir -p ~/.claude/loop-runs/_skill-backups/$(date +%F)
-cp -R ~/.claude/skills/little-<name> ~/.claude/loop-runs/_skill-backups/$(date +%F)/
-```
+A fix for the project repo's own `CLAUDE.md` isn't a skill change: list it in the close-out for the user to action, and leave it out of the issue.
 
 Edits stay small and specific, follow `writing-great-skills`, and replace rather than pile on — a skill that only ever grows rots.
 
-**Completion criterion:** every item has an outcome — fixed (edit applied), watching, or dropped.
+**Completion criterion:** every item has an outcome — fix (edit drafted and agreed), watching, or dropped.
 
-## Step 5 — Log it
+## Step 5 — Raise the improvements issue
+
+Skip this step if nothing was marked **fix**.
+
+Otherwise, draft one issue on `mandyh101/my-skills` and show it to the user before creating it:
+
+- **Title:** `Retro: <TICKET> — <n> skill improvements`
+- **Body:**
+  - one line on the run (ticket, PR link, sessions, days, phases, attempts)
+  - **Fixes** — one section per item: what happened and the evidence; where it goes (`file § section`); check or gate; the drafted edit as old → new
+  - **Watching** — short names with one line of evidence, so a later retro can count repeats
+  - **Went well** — so a later fix doesn't undo it
+
+On the user's go-ahead:
+
+```bash
+gh issue create --repo mandyh101/my-skills --title '<title>' --body-file <body file>
+```
+
+**Completion criterion:** the issue is created and its URL noted, or there was nothing to fix.
+
+## Step 6 — Log it
 
 Append to the run log per [`RUN-LOG.md`](../little-loop/RUN-LOG.md):
 
 ```
-YYYY-MM-DD little-retro retro: fixed — <short names>; watching — <short names>; dropped — <short names>
+YYYY-MM-DD little-retro retro: fix — <short names> (<issue URL>); watching — <short names>; dropped — <short names>
 ```
 
 Watching items are named so the next retro can count repeats.
 
-## Step 6 — Remove the plan doc
+## Step 7 — Remove the plan doc
 
 Anything in the plan worth keeping in the repo — a decision a future reader needs — is the user's call; offer it once, and only move it if they say so.
 
@@ -103,6 +121,6 @@ Tell the user that CI reruns on this commit and some repos need a re-approve; af
 
 **Completion criterion:** the plan doc is removed and pushed, or the user said to keep it.
 
-## Step 7 — Close out
+## Step 8 — Close out
 
-Short, in the terminal, no file: the run (sessions, days, phases, attempts), what went well, what you changed and where, what's being watched. Say plainly when the sample was too thin to conclude much — a retro that invents findings costs a real afternoon later.
+Short, in the terminal, no file: the run (sessions, days, phases, attempts), what went well, the improvements issue link, any `CLAUDE.md` fixes for the user to action, what's being watched. Say plainly when the sample was too thin to conclude much — a retro that invents findings costs a real afternoon later.
