@@ -22,10 +22,11 @@ Shared reference: [`SIZE.md`](SIZE.md) (PR size limit), [`SONAR-CLI.md`](SONAR-C
 7. **Size limit** — the default in [`SIZE.md`](SIZE.md), or the repo's override.
 8. **Plan path** — `docs/plans/<TICKET>-<slug>.md` unless the repo's `CLAUDE.md` names another.
 9. **Run log** — create `~/.claude/loop-runs/<repo>/<TICKET>.md` with its header if missing; log `start`.
+10. **Skills dir** — the folder holding the little-* skills: the parent of this skill's base directory (shown when the skill loads). Subagent prompts below use it as `<skills dir>`; never assume `~/.claude/skills`, since an installed plugin lives elsewhere.
 
 Then tell the user: the ticket; that a **round of questions and a plan sign-off come first**, then the loop goes autonomous; that you'll commit and push on their behalf; and that merging stays theirs. An unannounced grill reads as the loop being stuck.
 
-**Completion criterion:** ticket, base, Sonar availability, size limit and plan path are known; tree is clean; run log started; the user has been told what's coming.
+**Completion criterion:** ticket, base, Sonar availability, size limit, plan path and skills dir are known; tree is clean; run log started; the user has been told what's coming.
 
 ## Step 1 — Plan
 
@@ -33,7 +34,7 @@ Then tell the user: the ticket; that a **round of questions and a plan sign-off 
 
 Dispatch one `general-purpose` subagent and **keep its ID** so you can talk to it:
 
-> Read `~/.claude/skills/little-plan/SKILL.md` and follow it in relay mode. Ticket: `<key or pasted text>`. Plan path: `<path>`. Size limit: `<limit>`.
+> Read `<skills dir>/little-plan/SKILL.md` and follow it in relay mode. Ticket: `<key or pasted text>`. Plan path: `<path>`. Size limit: `<limit>`.
 
 ### Relay the grill
 
@@ -94,13 +95,13 @@ For each unticked phase, in order. **Never start a phase until the one before it
 
 2. **Implement.** Dispatch a fresh `general-purpose` subagent:
 
-   > Read `~/.claude/skills/little-implement/SKILL.md` and follow it. Plan doc: `<path>`. Phase: `<N — name>`. Branch: `<branch>`. Base: `origin/<base>`. Ticket: `<key>`. Sonar: `<available, key | not available>`. Run log: `<path>`. Commit the phase and its checkbox tick together as one commit.
+   > Read `<skills dir>/little-implement/SKILL.md` and follow it. Plan doc: `<path>`. Phase: `<N — name>`. Branch: `<branch>`. Base: `origin/<base>`. Ticket: `<key>`. Sonar: `<available, key | not available>`. Run log: `<path>`. Commit the phase and its checkbox tick together as one commit.
 
    Wait for it to **finish** before touching the checkout. If it stopped on a broken assumption or a size overrun, **escalate**.
 
 3. **Verify.** Dispatch a **fresh** `general-purpose` subagent — never the implementer:
 
-   > Read `~/.claude/skills/little-verify/SKILL.md` and follow it. Plan doc: `<path>`. Phase: `<N — name>`. Phase start: `<PHASE_START>`. Sonar: `<…>`.
+   > Read `<skills dir>/little-verify/SKILL.md` and follow it. Plan doc: `<path>`. Phase: `<N — name>`. Phase start: `<PHASE_START>`. Sonar: `<…>`.
 
 4. **On needs work** — a phase gets **three attempts** in total: the first build, and up to **two re-work rounds**. Dispatch a new implementer whose prompt opens with **"re-work round <1|2>"**, then the plan doc, phase, branch, phase-start sha, the phase commit sha, and the latest verifier's findings **verbatim** — on round 2, also say it's the **last attempt**. A fresh agent has no memory; a paraphrased finding sends it off rebuilding from scratch. Then re-verify with a fresh verifier. Log `rework` with the round and a one-line reason per blocker.
 

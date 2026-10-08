@@ -40,7 +40,7 @@ One event, one writer — a line written twice inflates the count retro reads.
 | `intervention` | little-loop | any time the user steps in mid-run, even if the run recovers |
 | `ci` | little-loop | which check / Sonar condition failed, and outcome |
 | `address` | little-address | PR round N; counts per triage bucket; wrong assumptions named |
-| `retro` | little-retro | findings: fixed / watching / dropped |
+| `retro` | little-retro | findings: fix (issue URL) / watching / dropped |
 
 ## What stays out
 
