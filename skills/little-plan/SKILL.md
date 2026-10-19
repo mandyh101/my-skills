@@ -31,6 +31,8 @@ List every gap before deciding anything. Sweep at least:
 - **Edges of the ticket** — implied but unstated behaviour; what a reader would assume is included that you intend to leave out.
 - **Data and lifecycle** — existing records, backfill, reversibility.
 - **Contradictions with the code** — the ticket describes something the code already does differently.
+- **Reachability** — every existing path a phase changes or guards is actually reachable and in use: trace the route, admin entry point or caller. Broken or unused → a question for the grill, not a phase.
+- **What already exists** — before planning new infrastructure (logging, helpers, extensions, settings), search for something that already covers it, including recent additions in `git log`.
 
 **Facts are looked up, never asked.** Anything the filesystem, tests, Jira or `git log` can answer is yours to resolve. What survives is the list of genuine **decisions** — where two reasonable people would choose differently. Give each one your **recommended answer** and why.
 

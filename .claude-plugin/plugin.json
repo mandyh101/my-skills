@@ -1,7 +1,7 @@
 {
   "name": "my-skills",
   "description": "Mandy's little-loop skill family for Claude Code \u2014 ticket to one small reviewable PR, one phase at a time",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "mandyh101"
   }

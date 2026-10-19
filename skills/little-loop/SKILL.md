@@ -138,13 +138,13 @@ Once every phase is pushed:
 
 **Green** → update the PR body (below), then `gh pr ready <pr>`.
 
-PR body — written for a reviewer, linking the plan rather than retelling it:
+PR body — written for a reviewer, in plain language, linking the plan rather than retelling it. Describe behaviour, not implementation: name methods or patterns only where the reviewer needs them to find the code. Leave out the loop's own process (attempts, refused commands, what went "beyond the plan"); that belongs in the run log.
 
 - **Summary** — what and why, one or two sentences, ticket linked.
-- **Changes** — one line per phase commit.
-- **Testing** — each AC and the evidence that proves it; any AC proven only by reasoning gets its own **Needs eyes** heading with where to look.
+- **Changes** — one short line per behaviour change, plus the reason for any decision that departs from the ticket.
+- **Testing** — each AC and the evidence that proves it. **Needs eyes** lists only what a reviewer can act on: where to look, and what to check.
 - **Assumptions** — every Assumed item, since checking them is the reviewer's main job.
-- **Size** — actual vs limit, and the Opt-out reason if one was taken.
+- **Size** — only when over the limit, with the Opt-out reason.
 
 **Completion criterion:** checks and gate green and PR marked ready — or a red check escalated, or a pending one reported as pending.
 
