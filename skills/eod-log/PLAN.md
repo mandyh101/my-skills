@@ -26,9 +26,9 @@
 - [x] Verification: `python3 -m unittest discover skills/eod-log/tests`
 
 ### Phase 3: Local collectors
-- [ ] What: `scripts/collect_local.py <date>` – git commits by `mandy.hale@madecurious.com` across `~/projects` + `~/dev` (incl. `__worktrees`, depth-capped, skip `node_modules`) and Claude session jsonl (`cwd`, `gitBranch`, `timestamp`; UTC → Pacific/Auckland) → normalised activity JSON
-- [ ] Commit: script + tests using a temp git repo and fixture jsonl
-- [ ] Verification: `python3 -m unittest discover skills/eod-log/tests`; run on a real date, runtime < ~10 s
+- [x] What: `scripts/collect_local.py <date>` – git commits by `mandy.hale@madecurious.com` across `~/projects` + `~/dev` (incl. `__worktrees`, depth-capped, skip `node_modules`) and Claude session jsonl (`cwd`, `gitBranch`, `timestamp`; UTC → Pacific/Auckland) → normalised activity JSON
+- [x] Commit: script + tests using a temp git repo and fixture jsonl
+- [x] Verification: `python3 -m unittest discover skills/eod-log/tests`; run on a real date, runtime < ~10 s
 
 ### Phase 4: SKILL.md workflow
 - [ ] What: `SKILL.md` – parse date arg; run collector; fetch Jira/Slack/Calendar via connectors (per `CONNECTORS.md`); normalise to builder input; show table (flagged first); handle replies (`3: KEY` verified in Jira, `5: text`, `7: skip`, loose Jira search); create all events on approval; report what was created
