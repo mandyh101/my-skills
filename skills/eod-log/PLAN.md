@@ -16,14 +16,14 @@
 - [x] Verification: Manual – external tools, nothing to unit test. Proof = one test event created + deleted, findings recorded
 
 ### Phase 2: Block builder (core logic)
-- [ ] What: `scripts/build_blocks.py` – normalised activity + meetings + existing 🕒 blocks + date (JSON in) → proposed blocks (JSON out):
+- [x] What: `scripts/build_blocks.py` – normalised activity + meetings + existing 🕒 blocks + date (JSON in) → proposed blocks (JSON out):
   - Jira key extraction (branch → commit → Slack → Jira)
   - same-ticket grouping, merge gaps < 30 min, 15-min rounding/minimum
   - no overlap with meetings or existing 🕒 blocks
   - window 08:30–15:00; outside-hours flag; gap < 60 min = unknown, ≥ 60 min = break
   - title/description/colour formatting (no Slack/DM text or commit messages in description)
-- [ ] Commit: script + `tests/test_build_blocks.py`
-- [ ] Verification: `python3 -m unittest discover skills/eod-log/tests`
+- [x] Commit: script + `tests/test_build_blocks.py`
+- [x] Verification: `python3 -m unittest discover skills/eod-log/tests`
 
 ### Phase 3: Local collectors
 - [ ] What: `scripts/collect_local.py <date>` – git commits by `mandy.hale@madecurious.com` across `~/projects` + `~/dev` (incl. `__worktrees`, depth-capped, skip `node_modules`) and Claude session jsonl (`cwd`, `gitBranch`, `timestamp`; UTC → Pacific/Auckland) → normalised activity JSON
