@@ -31,9 +31,10 @@
 - [x] Verification: `python3 -m unittest discover skills/eod-log/tests`; run on a real date, runtime < ~10 s
 
 ### Phase 4: SKILL.md workflow
-- [ ] What: `SKILL.md` – parse date arg; run collector; fetch Jira/Slack/Calendar via connectors (per `CONNECTORS.md`); normalise to builder input; show table (flagged first); handle replies (`3: KEY` verified in Jira, `5: text`, `7: skip`, loose Jira search); create all events on approval; report what was created
-- [ ] Commit: `SKILL.md` (+ any reply-parsing helper, with tests)
+- [x] What: `SKILL.md` – parse date arg; run collector; fetch Jira/Slack/Calendar via connectors (per `CONNECTORS.md`); normalise to builder input; show table (flagged first); handle replies (`3: KEY` verified in Jira, `5: text`, `7: skip`, loose Jira search); create all events on approval; report what was created
+- [x] Commit: `SKILL.md` (+ any reply-parsing helper, with tests)
 - [ ] Verification: unit tests still pass; Manual: real run on today – LLM-driven flow can't be unit tested. Check table looks right, re-run proposes nothing new, events are pink/free/no reminders, events appear in Toggl calendar view
+  - Done 2026-11-09 on 6 Nov: 9 events created, re-run proposes 0. Waiting on: Toggl check
 
 ### Phase 5: Docs + version
 - [ ] What: entry in `docs/SKILLS.md`; bump version in `plugin.json` + `marketplace.json`

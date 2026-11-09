@@ -138,6 +138,16 @@ class Flags(unittest.TestCase):
                     {"start": at("13:00"), "end": at("15:00"), "title": "b"}]
         self.assertEqual(run(meetings=meetings), [])
 
+    def test_no_unknown_gaps_after_now(self):
+        meetings = [{"start": at("08:30"), "end": at("13:00"), "title": "a"}]
+        blocks = run(meetings=meetings, now=at("13:40"))
+        self.assertEqual([(span(b), b["flags"]) for b in blocks], [(("13:00", "13:30"), ["unknown"])])
+
+    def test_now_on_later_day_has_no_effect(self):
+        meetings = [{"start": at("08:30"), "end": at("14:30"), "title": "a"}]
+        blocks = run(meetings=meetings, now="2026-11-09T10:00:00")
+        self.assertEqual([span(b) for b in blocks], [("14:30", "15:00")])
+
     def test_custom_window(self):
         blocks = work(run([act("16:10", branch="DIAMP-1")], window={"start": "09:00", "end": "17:00"}))
         self.assertEqual(blocks[0]["flags"], [])
@@ -170,6 +180,29 @@ class Formatting(unittest.TestCase):
         self.assertNotIn("secret", block["description"])
         self.assertNotIn("DM", block["description"])
         self.assertEqual(block["where"], ["DM with someone"])
+
+    def test_suggestion_from_branch(self):
+        acts = [act("09:01", branch="eod-log", where="my-skills"),
+                act("09:05", "claude", branch="eod-log", where="my-skills", session="s"),
+                act("09:06", "slack", text="chat", where="#random")]
+        block = work(run(acts))[0]
+        self.assertEqual(block["flags"], ["no-jira"])
+        self.assertEqual(block["suggestion"], "eod-log")
+        self.assertIsNone(block["title"])
+
+    def test_suggestion_falls_back_to_repo_on_generic_branch(self):
+        block = work(run([act("09:01", "claude", branch="develop", where="marketplace", session="s")]))[0]
+        self.assertEqual(block["suggestion"], "marketplace")
+
+    def test_branch_beats_more_frequent_repo(self):
+        acts = [act("09:01", branch="eod-log", where="my-skills")] + [
+            act(f"09:0{m}", "claude", branch="HEAD", where="skills", session="s") for m in range(2, 9)]
+        self.assertEqual(work(run(acts))[0]["suggestion"], "eod-log")
+
+    def test_no_suggestion_from_slack_or_keyed_blocks(self):
+        blocks = work(run([act("09:01", "slack", text="hi", where="#random"),
+                           act("10:01", branch="DIAMP-1-x", where="marketplace")]))
+        self.assertEqual([b["suggestion"] for b in blocks], [None, None])
 
     def test_output_sorted_by_start(self):
         blocks = run([act("11:05", branch="DIAMP-2"), act("09:05", branch="DIAMP-1")])

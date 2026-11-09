@@ -15,17 +15,20 @@ Input (all times local Pacific/Auckland, ISO, no offset):
   ],
   "meetings": [{"start": "...", "end": "...", "title": "..."}],
   "logged":   [{"start": "...", "end": "...", "title": "🕒 ..."}],       # existing 🕒 blocks
-  "summaries": {"DIAMP-1": "Ticket summary"}
+  "summaries": {"DIAMP-1": "Ticket summary"},
+  "now": "2026-11-05T14:03:00"                          # optional: no "unknown" gaps after this
 }
 
 Output:
 {
   "blocks": [{"start", "end", "minutes", "key", "title", "description", "colorId",
-              "flags": [...], "sources": {...}, "where": [...]}],
+              "flags": [...], "sources": {...}, "where": [...], "suggestion": ...}],
   "missing_summaries": ["DIAMP-2"]
 }
 
 Flags: "no-jira" (activity, no key), "unknown" (gap < 60 min), "outside-hours".
+"suggestion": for no-jira blocks, a name for the work taken from git/Claude branch (or repo when the
+branch is generic) – never from Slack. None if nothing tangible.
 """
 import json
 import re
@@ -45,6 +48,9 @@ TITLE_PREFIX = "🕒 "
 KEY_RE = re.compile(r"\b([A-Z][A-Z0-9]+)-(\d+)\b")
 # Things that look like Jira keys but aren't
 NOT_PROJECTS = {"UTF", "CVE", "ISO", "SHA", "RFC", "GPT", "TLS", "HTTP", "PR", "AES", "MD", "IE"}
+
+# Branch names that say nothing about the work
+GENERIC_BRANCHES = {"", "HEAD", "main", "master", "develop", "dev"}
 
 # Where to look for a key, in priority order
 KEY_FIELDS = ("branch", "message", "text", "key")
@@ -160,6 +166,7 @@ def build(data):
         sources = Counter()
         sessions = defaultdict(set)
         where = set()
+        branches, repos = Counter(), Counter()
         for s in range(run_start, run_end):
             for item_key, item in slot_items.get(s, []):
                 if item_key != key:
@@ -171,6 +178,12 @@ def build(data):
                     sources[src] += 1
                 if item.get("where"):
                     where.add(item["where"])
+                if key is None and src in ("git", "claude"):
+                    branch = item.get("branch") or ""
+                    if branch not in GENERIC_BRANCHES:
+                        branches[branch] += 1
+                    elif item.get("where"):
+                        repos[item["where"]] += 1
         for src, ids in sessions.items():
             sources[src] += len(ids)
 
@@ -179,17 +192,28 @@ def build(data):
             flags.append("no-jira")
         if run_end <= win_start or run_start >= win_end:
             flags.append("outside-hours")
-        blocks.append(_block(day, run_start, run_end, key, summaries, flags, dict(sources), sorted(where)))
+        block = _block(day, run_start, run_end, key, summaries, flags, dict(sources), sorted(where))
+        names = branches or repos  # a real branch name beats a repo name
+        if names:
+            block["suggestion"] = names.most_common(1)[0][0]
+        blocks.append(block)
 
-    # Empty, unblocked gaps inside the window
+    # Empty, unblocked gaps inside the window (and before `now`, if given)
+    gap_end = win_end
+    if data.get("now"):
+        now = datetime.fromisoformat(data["now"])
+        if now.date() < day:
+            gap_end = win_start
+        elif now.date() == day:
+            gap_end = min(win_end, (now.hour * 60 + now.minute) // SLOT)
     taken = blocked | set(owner)
     s = win_start
-    while s < win_end:
+    while s < gap_end:
         if s in taken:
             s += 1
             continue
         e = s
-        while e < win_end and e not in taken:
+        while e < gap_end and e not in taken:
             e += 1
         if (e - s) * SLOT < BREAK_GAP:
             blocks.append(_block(day, s, e, None, summaries, ["unknown"], {}, []))
@@ -234,6 +258,7 @@ def _block(day, start_slot, end_slot, key, summaries, flags, sources, where):
         "flags": flags,
         "sources": sources,
         "where": where,
+        "suggestion": None,
     }
 
 

@@ -68,7 +68,7 @@ updateHistory: false
 - Activity = changelog `histories[]` where `author.accountId` = mine and `created` is on the date, plus comments by me on the date
 - **Ignore** histories whose only items are `WorklogId` / `timespent` / `timeestimate`. That's me logging time, not working on it
 - Changelog defaults to 10 most recent histories – enough for one day; note if `total > maxResults`
-- Responses are large (avatars etc). Keep only key, summary, timestamps
+- Responses are **very** large: every history includes avatars, and description edits include the full old + new text. In the first real run, 2 of 5 tickets went over 80k characters. Always do this step in a subagent that returns only `[{key, time}]`
 
 **Check a key I give at review:** `getJiraIssue` with `fields: ["summary"]`. A 404 means the key doesn't exist
 
