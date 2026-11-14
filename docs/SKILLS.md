@@ -26,6 +26,12 @@ Manual-only (`disable-model-invocation: true`). Works through review comments, f
 
 Manual-only. Retro on a finished `little-loop` run — what worked, what didn't, across all its sessions. Raises a GitHub issue on this repo with the skill improvements you agree, then removes the plan doc before merge.
 
+## eod-log
+
+Trigger: `/eod-log [today|yesterday|YYYY-MM-DD]`, "log my day". Standalone, not part of the little-loop family.
+
+Gathers the day's Jira, git, Claude session and Slack (own posts) activity, proposes 15-min 🕒 blocks linked to Jira within 08:30–15:00, and flags no-Jira, unknown and outside-hours time for you to fill in. Writes pink, free events to the primary calendar only after you say `go`; re-runs skip time already logged. Logic lives in stdlib Python scripts with tests (`python3 -m unittest discover skills/eod-log/tests`). See [`eod-handoff.md`](../skills/eod-log/eod-handoff.md) for the agreed rules and [`CONNECTORS.md`](../skills/eod-log/CONNECTORS.md) for the connector calls.
+
 ## Shared conventions
 
 - **PR size limit** — [`little-loop/SIZE.md`](../skills/little-loop/SIZE.md): 300 changed lines or 10 files, overridable per-repo in `CLAUDE.md`/`AGENTS.md`.
