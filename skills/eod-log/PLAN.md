@@ -37,6 +37,6 @@
   - Done 2026-11-09 on 6 Nov: 9 events created, re-run proposes 0. Waiting on: Toggl check
 
 ### Phase 5: Docs + version
-- [ ] What: entry in `docs/SKILLS.md`; bump version in `plugin.json` + `marketplace.json`
-- [ ] Commit: docs + version bump
-- [ ] Verification: `python3 -m json.tool` on both json files; versions match (grep)
+- [x] What: entry in `docs/SKILLS.md`; bump version in `plugin.json` + `marketplace.json`
+- [x] Commit: docs + version bump
+- [x] Verification: `python3 -m json.tool` on both json files; versions match (grep)

@@ -1,7 +1,7 @@
 {
   "name": "my-skills",
-  "description": "Mandy's little-loop skill family for Claude Code \u2014 ticket to one small reviewable PR, one phase at a time",
-  "version": "0.1.0",
+  "description": "Mandy's Claude Code skills — the little-loop family (ticket to one small reviewable PR, one phase at a time) and eod-log (end-of-day time log to calendar)",
+  "version": "0.2.0",
   "author": {
     "name": "mandyh101"
   }
